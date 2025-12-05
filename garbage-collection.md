@@ -51,7 +51,3 @@ If the Chef (your code) creates 1,000 dirty dishes (temporary objects) for every
 * **Job of the Programmer:** The programmer's job is to write code that only uses the memory it needs and avoids creating unnecessary, short-lived objects. This manages the **creation** of memory.
 
 **In summary, garbage collection helps manage the *consequences* of using memory, but it can never fix the underlying issue of badly written code that uses memory inefficiently.**
-
----
-
-### **Would you like me to find out the difference between the G1GC and ZGC garbage collectors, which are two modern approaches to solving the "pause time" problem?**
