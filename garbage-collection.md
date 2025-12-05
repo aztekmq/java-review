@@ -12,7 +12,7 @@ When a Java program runs slowly, it's often because of a few common mistakes tha
     * This is the **most common performance killer**. Your program constantly creates small, temporary objects (like strings or small data structures) and then immediately throws them away.
     * The JVM has to spend too much time cleaning up this huge pile of discarded trash instead of doing its main job. This cleanup is called **Garbage Collection**, and if it happens too often, your program stops or "pauses" (called a **stop-the-world** pause) for too long, making the application feel slow or unresponsive. 
 
-[Image of Garbage Collection cycle]
+![Image of Garbage Collection cycle](licensed-image.jfif)
 
 
 * **2. 🧵 Bad Thread Management (Contention):**
