@@ -1,9 +1,3 @@
-That's a great question! It deals with some important parts of how Java works. Your hypothesis is actually **right**. Bad code can't be fixed by using a different garbage collection (GC) algorithm.
-
-Here is an explanation of the causes of slow Java programs and why GC can't fix bad code, all in straightforward language.
-
----
-
 ## 🐢 Top Causes of Slow Java Programs (JVM)
 
 When a Java program runs slowly, it's often because of a few common mistakes that make the **Java Virtual Machine (JVM)** struggle. Think of the JVM as a tiny manager running your Java program's operations.
