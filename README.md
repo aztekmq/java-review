@@ -55,18 +55,50 @@
 
 ## Runtime evidence (JFR + GC logs)
 
-Capture verbose runtime evidence before running the analyzer. The following pattern records a JFR while emitting detailed GC logs, aligning with international programming standards for reproducible diagnostics:
+This repository expects **verbose, reproducible evidence** for every lab. The commands below show exactly how to launch each track's representative scenario, capture JFR + GC logs, and then feed them to the analyzer. All samples keep explicit file names so you can compare runs between students or CI jobs.
+
+### Beginner (B1_gc_basics)
+
+Collect a lightweight profile and GC log while running the GC basics lab:
+
+```bash
+java -Xms256m -Xmx256m \
+     -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile \
+     -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags \
+     -XX:+HeapDumpOnOutOfMemoryError \
+     beginner/B1_gc_basics/GcBasics
+```
+
+### Intermediate (I1_gc_tuning_g1)
+
+Capture a tuned G1 run with correlated JFR and structured GC logging:
 
 ```bash
 java -Xms512m -Xmx512m \
-     -XX:StartFlightRecording=filename=app.jfr,dumponexit=true,settings=profile \
-     -Xlog:gc*:file=gc.log:uptime,time,level,tags \
+     -XX:MaxGCPauseMillis=200 \
+     -XX:StartFlightRecording=filename=intermediate-i1.jfr,dumponexit=true,settings=profile \
+     -Xlog:gc*:file=intermediate-i1-gc.log:uptime,time,level,tags \
+     -XX:+HeapDumpOnOutOfMemoryError \
+     intermediate/I1_gc_tuning_g1/MyServiceApp
+```
+
+### Advanced (A2_jfr_profiling)
+
+Record a full-profile JFR with verbose GC logging for the advanced profiling lab:
+
+```bash
+java -Xms1g -Xmx1g \
+     -XX:+UseZGC \
+     -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile \
+     -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags \
      -XX:+HeapDumpOnOutOfMemoryError \
      -Djava.util.logging.config.file=logging.properties \
      advanced/A2_jfr_profiling/MyServiceAppJfr
 ```
 
-After the run completes, analyze the captured artifacts:
+### Analyze captured evidence (all tracks)
+
+After any of the above runs, feed the recorded artifacts to the JVM Health Analyzer. The verbose Maven build keeps progress traceable:
 
 ```bash
 cd analyzer
@@ -74,19 +106,10 @@ mvn -q -DskipTests package
 
 java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
      -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
-     com.example.jvmhealth.JvmHealthAnalyzer ./app.jfr ./gc.log
+     com.example.jvmhealth.JvmHealthAnalyzer ./advanced-a2.jfr ./advanced-a2-gc.log
 ```
 
-Example (with fabricated artifacts to illustrate verbose analyzer output):
-
-```bash
-cd analyzer
-mvn -q -DskipTests package
-
-java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
-     -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
-     com.example.jvmhealth.JvmHealthAnalyzer ./shopping-cart-profile.jfr ./shopping-cart-gc.log
-```
+Swap the filenames to match the track you executed (e.g., `beginner-b1.jfr` with `beginner-b1-gc.log`). The analyzer prints allocation, pause, and CPU summaries with verbose banners so you can correlate findings with the original run.
 
 5. **Inspect lab-specific guides**
 
