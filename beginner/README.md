@@ -24,8 +24,8 @@ See individual subfolders for code.
 ```bash
 cd beginner/B1_gc_basics
 javac GcBasics.java
-java -Xms256m -Xmx256m -Xlog:gc* GcBasics
-java -Xms64m -Xmx64m -Xlog:gc* GcBasics
+java -cp ../../ -Xms256m -Xmx256m -Xlog:gc* beginner.B1_gc_basics.GcBasics
+java -cp ../../ -Xms64m -Xmx64m -Xlog:gc* beginner.B1_gc_basics.GcBasics
 ```
 
 Observe:
