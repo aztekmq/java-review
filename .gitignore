@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 analyzer/target/
 beginner/
 intermediate/
 advanced/
+=======
+# Ignore analyzer build artifacts and compiled binaries.
+analyzer/target/
+beginner/**/*.class
+>>>>>>> 36bad71ec3689531061bc7f22623ec1243630331
