@@ -1,1 +1,3 @@
+# Ignore analyzer build artifacts and compiled binaries.
 analyzer/target/
+beginner/**/*.class
