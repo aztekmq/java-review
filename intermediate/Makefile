@@ -12,13 +12,16 @@ CLASSES = $(SRCS:.java=.class)
 .PHONY: all clean
 
 all: $(CLASSES)
+	@echo "===> Intermediate labs compilation started"
 
 %.class: %.java
-$(JAVAC) $<
+	@echo "Compiling $<"
+	$(JAVAC) $<
 
 clean:
-rm -f I1_gc_tuning_g1/*.class
-rm -f I2_memory_leak_lab/*.class
-rm -f I2_memory_leak_lab/*.hprof
-rm -f I3_thread_dump_lock_contention/*.class
-rm -f I1_gc_tuning_g1/gc.log
+	@echo "===> Cleaning intermediate lab artifacts"
+	rm -f I1_gc_tuning_g1/*.class
+	rm -f I2_memory_leak_lab/*.class
+	rm -f I2_memory_leak_lab/*.hprof
+	rm -f I3_thread_dump_lock_contention/*.class
+	rm -f I1_gc_tuning_g1/gc.log
