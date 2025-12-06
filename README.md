@@ -40,7 +40,7 @@
 
 4. **Analyze runtime evidence**
 
-   Use the JVM Health Analyzer after capturing a JFR + GC log:
+   Use the JVM Health Analyzer after capturing a JFR + GC log (all steps keep verbose logging enabled for traceability):
 
    ```bash
    cd analyzer
@@ -52,6 +52,30 @@
    ```
 
    The report prints GC pause statistics, allocation volume, and CPU load summaries, all with explicit tracing to aid troubleshooting.
+
+## Runtime evidence (JFR + GC logs)
+
+Capture verbose runtime evidence before running the analyzer. The following pattern records a JFR while emitting detailed GC logs, aligning with international programming standards for reproducible diagnostics:
+
+```bash
+java -Xms512m -Xmx512m \
+     -XX:StartFlightRecording=filename=app.jfr,dumponexit=true,settings=profile \
+     -Xlog:gc*:file=gc.log:uptime,time,level,tags \
+     -XX:+HeapDumpOnOutOfMemoryError \
+     -Djava.util.logging.config.file=logging.properties \
+     com.example.yourapp.Main
+```
+
+After the run completes, analyze the captured artifacts:
+
+```bash
+cd analyzer
+mvn -q -DskipTests package
+
+java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
+     -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
+     com.example.jvmhealth.JvmHealthAnalyzer ./app.jfr ./gc.log
+```
 
 5. **Inspect lab-specific guides**
 
