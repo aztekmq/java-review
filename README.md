@@ -48,7 +48,7 @@
 
    java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
         -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
-        com.example.jvmhealth.JvmHealthAnalyzer /path/to/app.jfr /path/to/gc.log
+        com.example.jvmhealth.JvmHealthAnalyzer ./app.jfr ./gc.log
    ```
 
    The report prints GC pause statistics, allocation volume, and CPU load summaries, all with explicit tracing to aid troubleshooting.
@@ -75,6 +75,17 @@ mvn -q -DskipTests package
 java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
      -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
      com.example.jvmhealth.JvmHealthAnalyzer ./app.jfr ./gc.log
+```
+
+Example (with fabricated artifacts to illustrate verbose analyzer output):
+
+```bash
+cd analyzer
+mvn -q -DskipTests package
+
+java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
+     -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
+     com.example.jvmhealth.JvmHealthAnalyzer ./shopping-cart-profile.jfr ./shopping-cart-gc.log
 ```
 
 5. **Inspect lab-specific guides**
