@@ -11,6 +11,15 @@
 
   <build>
     <plugins>
+      <!-- Use a modern resources plugin to ensure dependable artifact resolution and
+           consistent handling of build resources. -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <includeEmptyDirs>false</includeEmptyDirs>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.11.0</version>
