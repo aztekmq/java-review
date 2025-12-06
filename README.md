@@ -83,6 +83,7 @@
 - **Build & Run:**
   - `mvn -q -DskipTests package` inside `analyzer/`.
   - `java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer <jfr> [gc.log]`.
+  - If you encounter a `release version 17 not supported` message, ensure `JAVA_HOME` points to a JDK 17+ installation; the `scripts/build_analyzer.sh` helper performs this check up front with verbose guidance.
 
 ## Automation & Scripts (all verbose)
 - `scripts/compile_beginner.sh` – Runs `make all` in `beginner/` with command tracing to show each compilation step.
