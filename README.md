@@ -97,6 +97,58 @@
 - Keep **artifacts** (logs, `.hprof`, `.jfr`) alongside labs for postmortem analysis.
 - Use the **provided Makefiles** to ensure consistent compilation across environments while adhering to international programming standards for repeatable builds and traceable output.
 
+## Graphical JVM Monitoring on Ubuntu WSL (VisualVM)
+Use VisualVM to observe heap usage, GC activity, and thread states in real time while keeping verbose diagnostics enabled for traceability.
+
+1. **Enable GUI support in WSL**
+
+   - **Windows 11/WSLg**: Graphics work out of the box; no extra display server needed.
+   - **Windows 10 (or WSL without WSLg)**: Install an X server such as [VcXsrv](https://sourceforge.net/projects/vcxsrv/), then set the display in your WSL shell:
+
+     ```bash
+     export DISPLAY=$(grep -m1 nameserver /etc/resolv.conf | awk '{print $2}'):0
+     export LIBGL_ALWAYS_INDIRECT=1
+     ```
+
+2. **Install the viewer with verbose logging enabled**
+
+   ```bash
+   sudo apt-get update
+   sudo apt-get install -y visualvm
+
+   # Optional: turn on verbose console logging for VisualVM to aid debugging
+   export VISUALVM_LOGGING_OPTS="-J-Dnetbeans.logger.console=true -J-Dorg.netbeans.Logger.level=FINE"
+   ```
+
+3. **Start your JVM with JMX + verbose evidence**
+
+   Run any lab with GC logging, JMX, and a heap dump trigger so VisualVM can attach:
+
+   ```bash
+   java -Xms512m -Xmx512m \
+        -Xlog:gc*:file=gc.log:uptime,time,level,tags \
+        -Dcom.sun.management.jmxremote \
+        -Dcom.sun.management.jmxremote.port=9010 \
+        -Dcom.sun.management.jmxremote.authenticate=false \
+        -Dcom.sun.management.jmxremote.ssl=false \
+        -XX:+HeapDumpOnOutOfMemoryError \
+        beginner/B1_gc_basics/GcBasics
+   ```
+
+4. **Launch VisualVM from WSL**
+
+   Start the GUI with the verbose logging options so you can debug any connection issues:
+
+   ```bash
+   visualvm $VISUALVM_LOGGING_OPTS --jdkhome "$JAVA_HOME" &
+   ```
+
+5. **Attach to the running JVM**
+
+   - In VisualVM, locate the running process under **Local** (or add a remote JMX connection to `localhost:9010`).
+   - Open the **Monitor** and **Threads** tabs to watch heap, GC pauses, and thread states in real time; use the **Sampler** or **Profiler** for CPU/allocation views.
+   - Keep `gc.log` and any JFR captures alongside your run for correlation; the verbose VisualVM console output helps align GUI observations with logged events.
+
 ## Next Steps
 - Work through the tracks in order, using the verbose scripts to compile and the per-lab guides to run scenarios.
 - Capture GC logs and JFR recordings during experiments, then feed them to the JVM Health Analyzer for quick summaries.
