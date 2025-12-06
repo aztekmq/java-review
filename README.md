@@ -63,7 +63,7 @@ java -Xms512m -Xmx512m \
      -Xlog:gc*:file=gc.log:uptime,time,level,tags \
      -XX:+HeapDumpOnOutOfMemoryError \
      -Djava.util.logging.config.file=logging.properties \
-     com.example.yourapp.Main
+     advanced/A2_jfr_profiling/MyServiceAppJfr
 ```
 
 After the run completes, analyze the captured artifacts:
