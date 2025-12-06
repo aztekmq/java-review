@@ -7,19 +7,19 @@ JAVAC ?= javac
 all: beginner intermediate advanced analyzer
 
 beginner:
-$(MAKE) -C beginner
+	$(MAKE) -C beginner
 
 intermediate:
-$(MAKE) -C intermediate
+	$(MAKE) -C intermediate
 
 advanced:
-$(MAKE) -C advanced
+	$(MAKE) -C advanced
 
 analyzer:
-cd analyzer && mvn -q -DskipTests package
+	cd analyzer && mvn -q -DskipTests package
 
 clean:
--$(MAKE) -C beginner clean
--$(MAKE) -C intermediate clean
--$(MAKE) -C advanced clean
--cd analyzer && mvn -q clean || true
+	-$(MAKE) -C beginner clean
+	-$(MAKE) -C intermediate clean
+	-$(MAKE) -C advanced clean
+	-cd analyzer && mvn -q clean || true
