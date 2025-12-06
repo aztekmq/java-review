@@ -14,10 +14,10 @@ CLASSES = $(SRCS:.java=.class)
 all: $(CLASSES)
 
 %.class: %.java
-$(JAVAC) $<
+	$(JAVAC) $<
 
 clean:
-rm -f B1_gc_basics/*.class
-rm -f B2_heap_sizing/*.class
-rm -f B3_thread_states/*.class
-rm -f B2_heap_sizing/*.hprof
+	rm -f B1_gc_basics/*.class
+	rm -f B2_heap_sizing/*.class
+	rm -f B3_thread_states/*.class
+	rm -f B2_heap_sizing/*.hprof
