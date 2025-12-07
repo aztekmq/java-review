@@ -1,0 +1,40 @@
+name: jvmAnalyzer
+summary: JVM tuning & diagnostics lab focused on production-ready, deep profiling features (YourKit style).
+modules:
+  - id: beginner
+    path: beginner/
+    responsibilities:
+      - teach GC basics & telemetry
+      - heap sizing and OOM
+      - thread states and basic dumps
+  - id: intermediate
+    path: intermediate/
+    responsibilities:
+      - G1 GC tuning & GC logs
+      - **memory leak diagnosis (Retained Size concept)**
+      - **advanced lock contention (Deadlock simulation)**
+  - id: advanced
+    path: advanced/
+    responsibilities:
+      - low-latency GC (ZGC vs G1)
+      - JFR profiling & Allocation Hotspots
+      - **container-aware JVM & remote profiling setup**
+      - **I/O and DB contention analysis**
+  - id: analyzer
+    path: analyzer/
+    responsibilities:
+      - parse JFR + optional GC log
+      - **Produce multi-section JVM Health Report to stdout.**
+      - **Report must include Top 5 CPU Hotspots (methods).**
+      - **Report must include Top 5 Allocating Classes.**
+      - **Report must include Deadlock Count and Top Contended Monitors.**
+invariants:
+  - "Each lab must compile standalone with javac (JDK 17+)."
+  - "README and code filenames must stay in sync."
+  - "Analyzer must always output GC pause, allocation, and CPU summaries if present."
+  - "Analyzer must always include Top 5 Allocators and Top 5 CPU methods in its report."
+  - "Analyzer must report Deadlock Count (even if 0)."
+  - "No external services are required to run labs (simulations are fine)."
+  - "Advanced labs must include configuration for remote/container profiling."
+build:
+  - "Top-level Makefile must support targets: beginner, intermediate, advanced, analyzer."
