@@ -9,18 +9,19 @@ import jdk.management.jfr.FlightRecorderMXBean;
 import jdk.management.jfr.RecordingInfo;
 
 /**
- * Minimal application to run inside containers and observe JVM ergonomics with
- * resource limits. Verbose lifecycle messages support debugging and benchmarking.
+ * Minimal application to observe JVM ergonomics with resource limits without
+ * relying on containers. Verbose lifecycle messages support debugging and
+ * benchmarking.
  *
  * <p>The implementation follows international programming standards by
  * documenting each diagnostic step and by hardening the runtime to ensure that
- * JFR and GC artifacts are written to the expected mount path even when the
- * container exits quickly.</p>
+ * JFR and GC artifacts are written to the working directory even when the JVM
+ * shuts down quickly.</p>
  */
 public class MyContainerApp {
     private static final Duration PAUSE_DURATION = Duration.ofMinutes(1);
-    private static final String DEFAULT_JFR_PATH = "/workspace/advanced-a3.jfr";
-    private static final String DEFAULT_GC_LOG_PATH = "/workspace/advanced-a3-gc.log";
+    private static final String DEFAULT_JFR_PATH = "advanced-a3.jfr";
+    private static final String DEFAULT_GC_LOG_PATH = "advanced-a3-gc.log";
 
     public static void main(String[] args) {
         Path jfrPath = resolvePath("JFR_DUMP_PATH", "jfr.dump.path", DEFAULT_JFR_PATH);

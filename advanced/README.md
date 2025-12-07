@@ -4,7 +4,7 @@ This track covers:
 
 - Low-latency GC (ZGC / Shenandoah)
 - Deep JFR profiling
-- JVM behavior in containers
+- JVM behavior under resource limits without containers
 
 ---
 
@@ -12,7 +12,7 @@ This track covers:
 
 1. **A1_low_latency_gc** – Compare ZGC vs G1 pause behavior
 2. **A2_jfr_profiling** – JFR-based profiling of a service
-3. **A3_container_aware_jvm** – Running JVM in Docker with resource limits
+3. **A3_container_aware_jvm** – JVM resource limits without Docker
 
 ---
 
@@ -70,37 +70,32 @@ Open `myapp.jfr` in **Java Mission Control** and inspect:
 
 ---
 
-## Lab A3 – JVM in Containers
+## Lab A3 – JVM Resource Limits without Docker
 
 **Folder:** `A3_container_aware_jvm/`
-**Files:** `MyContainerApp.java`, `Dockerfile`
+**File:** `MyContainerApp.java`
 
-### Build Docker Image (verbose)
-
-```bash
-# From the repo root; emits verbose output for every build step.
-scripts/build_container_image.sh
-```
-
-### Run with Limits and Capture Evidence
+### Run with Local Limits and Capture Evidence
 
 ```bash
-docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest \
-  java -Xms512m -Xmx512m \
-       -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile \
-       -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags \
-       -XX:+HeapDumpOnOutOfMemoryError \
-       -XshowSettings:vm \
-       -jar /app/MyContainerApp.jar
+cd advanced/A3_container_aware_jvm
+javac MyContainerApp.java
+
+java -Xms512m -Xmx512m \
+     -XX:ActiveProcessorCount=2 \
+     -XX:StartFlightRecording=filename=advanced-a3.jfr,dumponexit=true,settings=profile \
+     -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags \
+     -XX:+HeapDumpOnOutOfMemoryError \
+     -XshowSettings:vm \
+     MyContainerApp
 ```
 
-> **Troubleshooting – no `advanced-a3.jfr` or `advanced-a3-gc.log`:** both
-> artifacts are written to `/workspace` inside the container. If you omit the
-> `-v "$(pwd)":/workspace` volume mount, that directory is ephemeral and the
-> files vanish when `docker run --rm` removes the container. Always mount a
-> host directory (or choose another writable mount point) so the JFR and GC log
-> can be collected after the run. The app prints verbose diagnostics about the
-> resolved paths to help confirm the mount is active.
+> **Troubleshooting – missing `advanced-a3.jfr` or `advanced-a3-gc.log`:** both
+> artifacts are written to the working directory. If the files are absent, make
+> sure the JVM has write permissions in that folder and re-run the command.
+> The app prints verbose diagnostics about the resolved paths so you can verify
+> where the evidence should appear.
 
-Observe heap sizing, container-aware ergonomics, and verbose GC/JFR evidence. The JFR/GC artifacts land in the current working
-directory for later analysis with the JVM Health Analyzer.
+Observe heap sizing, CPU accounting via `-XX:ActiveProcessorCount`, and verbose
+GC/JFR evidence. The JFR/GC artifacts land in the current working directory for
+analysis with the JVM Health Analyzer.
