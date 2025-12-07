@@ -25,6 +25,15 @@ log() {
   printf '[run-standalone-app] %s\n' "$*"
 }
 
+print_java_diagnostics() {
+  log "Diagnosing host Java toolchain for compatibility"
+  log "java executable: $(command -v java)"
+  java -version 2>&1 | sed 's/^/[run-standalone-app] java -version: /'
+
+  log "javac executable: $(command -v javac)"
+  javac -version 2>&1 | sed 's/^/[run-standalone-app] javac -version: /'
+}
+
 detect_release() {
   if [[ -n "${TARGET_RELEASE-}" ]]; then
     log "Using user-specified target release: ${TARGET_RELEASE}"
@@ -34,7 +43,7 @@ detect_release() {
 
   local version_line
   version_line=$(java -version 2>&1 | head -n1)
-  if [[ ${version_line} =~ "([0-9]+)" ]]; then
+  if [[ ${version_line} =~ ([0-9]+) ]]; then
     local detected=${BASH_REMATCH[1]}
     log "Auto-detected target release from host JVM: ${detected}"
     echo "${detected}"
@@ -44,6 +53,8 @@ detect_release() {
   log "Warning: unable to detect host JVM version; defaulting to release 21"
   echo "21"
 }
+
+print_java_diagnostics
 
 target_release=$(detect_release)
 

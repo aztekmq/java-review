@@ -30,3 +30,25 @@ Key details:
 
 These defaults keep the lab transparent and debuggable without any container
 runtime involvement.
+
+## Troubleshooting class-version errors
+
+If you see an error similar to:
+
+```
+Error: LinkageError occurred while loading main class MyContainerApp
+java.lang.UnsupportedClassVersionError: MyContainerApp has been compiled by a more recent version of the Java Runtime (class file version 65.0), this version of the Java Runtime only recognizes class file versions up to 64.0
+```
+
+the host `javac` created bytecode for a newer Java release than your `java`
+runtime can execute. Resolve this by:
+
+- Running `./run-standalone-app.sh`, which automatically compiles with
+  `--release` set to the detected host JVM version and logs both `java -version`
+  and `javac -version` for visibility.
+- Manually recompiling with a matching target level, for example `javac --release 20 MyContainerApp.java`,
+  when your runtime is Java 20.
+- Upgrading the runtime to the version used for compilation.
+
+Verbose shell tracing and version logging in the helper script make the chosen
+toolchain explicit, helping avoid the mismatch shown above.
