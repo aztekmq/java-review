@@ -185,3 +185,81 @@ Use VisualVM to observe heap usage, GC activity, and thread states in real time 
    - Keep `gc.log` and any JFR captures alongside your run for correlation; the verbose VisualVM console output helps align GUI observations with logged events.
 
 
+## Appendix – Detailed Lab Explanations (Beginner to Advanced)
+
+Below is a detailed, novice-friendly walkthrough for the third beginner lab (`B3_thread_states`). The program is intentionally quiet because the threads are designed to sit in `RUNNABLE`, `TIMED_WAITING`, and `BLOCKED` states for observation—so “hanging” is expected. The commands include verbose logging (JFR + GC) so you get rich artifacts to inspect later.
+
+### What the program actually does
+
+Starts four threads:
+
+- **busy-thread**: loops forever, keeping the CPU busy (`RUNNABLE`).
+- **sleeping-thread**: repeatedly sleeps 10 seconds (`TIMED_WAITING`).
+- **locker-1**: acquires a lock, prints a message, then holds it for 60 seconds (`RUNNABLE` while holding the monitor).
+- **locker-2**: tries to take the same lock and blocks until `locker-1` releases it (`BLOCKED`).
+
+The main thread sleeps for 2 minutes, keeping the JVM alive so you can attach tools (e.g., `jstack`, Mission Control).
+
+Because the threads intentionally wait or loop, you will not see frequent console output after the initial lock messages. This is normal and follows international programming standards for deterministic diagnostics.
+
+### One-terminal quick start (minimal steps)
+
+Open a terminal and ensure you are in the repo root (`/workspace/java-review`).
+
+Run with verbose logging and JFR (copy/paste the whole command):
+
+```bash
+java -Xms256m -Xmx256m \
+  -XX:StartFlightRecording=filename=beginner-b3.jfr,dumponexit=true,settings=profile \
+  -Xlog:gc*:file=beginner-b3-gc.log:uptime,time,level,tags \
+  -cp beginner/B3_thread_states ThreadStatesDemo
+```
+
+- JFR recording goes to `beginner-b3.jfr` automatically on exit because of `dumponexit=true`.
+- GC verbose log streams to `beginner-b3-gc.log` with timestamps and tags for easier debugging.
+
+What you will see: a couple of lines like “locker-1 acquired lock…” and “locker-2 got the lock” once the monitor contention happens. After that the process idles so you can inspect it.
+
+Let it run for up to two minutes (or longer if you want). The threads will keep their states steady.
+
+Stop it cleanly with `Ctrl+C`. This flushes both the JFR and GC log files to disk—no extra commands needed.
+
+### Two-terminal workflow (recommended for observing “live”)
+
+Terminal A (run the program): start it with the command above. Leave it running.
+
+Terminal B (observe):
+
+- Run `jps` to see the Java process ID.
+- Run `jstack <pid>` to view thread states; you should see `RUNNABLE`, `TIMED_WAITING`, and `BLOCKED` threads as described above.
+- Tail the GC log while it runs: `tail -f beginner-b3-gc.log`.
+
+When finished, return to Terminal A and press `Ctrl+C` to finalize the JFR file.
+
+### Where to find your artifacts
+
+- `beginner-b3.jfr` — ready to open in JDK Mission Control or any JFR viewer.
+- `beginner-b3-gc.log` — unified GC logging with timestamps and tags for correlation with JFR.
+
+Both files are written to whatever directory you launched the command from (use the repo root to match the lab docs).
+
+### Why it “hangs” and what to expect
+
+The “hang” is intentional; the demo is built so threads sit in specific states for inspection. There is no continuous console output after the initial lock messages.
+
+If you need proof of activity, use `jstack` or a profiler/Mission Control session; the busy loop and sleeping threads will show up immediately.
+
+### Common pitfalls to avoid
+
+- **Running in the wrong directory:** start the command from `/workspace/java-review` so the classpath and output paths are correct.
+- **Expecting automatic termination:** the main thread sleeps for 2 minutes; you must stop it with `Ctrl+C` if you are done early.
+- **Missing artifacts:** if you kill the shell abruptly (not with `Ctrl+C`), you might interrupt flushing; `dumponexit=true` protects against most cases, but a hard kill could still lose data.
+
+### If you want extra verbosity
+
+- The provided `-Xlog:gc*` already enables verbose GC logging with timestamps and tags for easy debugging.
+- To add JVM diagnostic output, you can extend the `-Xlog` selectors (e.g., `-Xlog:gc*,safepoint,classhisto=info:file=beginner-b3-gc.log:uptime,time,level,tags`)—but the default flags are already suitable for a first pass.
+
+You now have a clear, step-by-step way to run the lab, capture the JFR/GC artifacts, and verify that the threads are in the intended states with transparent, verbose logging for compliance with international programming standards.
+
+
