@@ -153,6 +153,20 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 - Keep **artifacts** (logs, `.hprof`, `.jfr`) alongside labs for postmortem analysis.
 - Use the **provided Makefiles** to ensure consistent compilation across environments while adhering to international programming standards for repeatable builds and traceable output.
 
+### Accessing artifacts from WSL (`/mnt/c/...`)
+- The dev container mounts your repo at `/workspace/java-review`, which maps directly to your WSL path (for example, `/mnt/c/Users/<you>/Documents/githubdev/java-review`). Any JFR, GC log, or heap-dump file written under `/workspace/java-review` is immediately visible under the corresponding `/mnt/c/...` location.
+- For a **zero-copy workflow**, bind-mount a host folder into the repo so artifacts are written straight to Windows/WSL without exporting:
+
+  ```bash
+  sudo ./scripts/mount_artifacts_to_wsl.sh /mnt/c/Users/<you>/Documents/githubdev/java-review-artifacts
+
+  # then write artifacts to this in-repo mount point
+  echo "hello" > ./wsl-artifacts/smoke.txt
+  ls /mnt/c/Users/<you>/Documents/githubdev/java-review-artifacts
+  ```
+
+  The helper uses verbose logging (`set -x`) and international programming standards for portability. It creates (or reuses) `./wsl-artifacts` as the mount point, unmounts any prior bind, and confirms the mapping so you can debug easily. Anything written to `./wsl-artifacts` shows up at the host path instantly—no copy step required. If your environment blocks bind mounts, write artifacts directly into the repository tree (still visible under `/mnt/c/...`) or perform a manual `cp -v <artifact> /mnt/c/...` copy from your WSL shell.
+
 ## Graphical JVM Monitoring on Ubuntu WSL (VisualVM)
 Use VisualVM to observe heap usage, GC activity, and thread states in real time while keeping verbose diagnostics enabled for traceability.
 
