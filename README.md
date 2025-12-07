@@ -146,6 +146,7 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 - `scripts/build_container_image.sh` – Compiles the container lab, packages the JAR, and builds the Docker image with verbose Docker progress output.
 - `scripts/build_analyzer.sh` – Maven package build for the analyzer with verbose shell tracing.
 - `scripts/ci_compile_all.sh` – Orchestrates all of the above, useful for CI pipelines or local smoke checks.
+- `scripts/list_recordings.sh` – Enumerates JFR recordings and GC logs with verbose shell tracing. Control the search depth with `SEARCH_DEPTH` (set to an integer or `unbounded`) to include nested artifact directories while keeping output relative to the repository root.
 
 ## Logging & Diagnostics Conventions
 - Prefer **verbose JVM flags** (`-Xlog:gc*`, `-XshowSettings:vm`, `-XX:+HeapDumpOnOutOfMemoryError`) to capture reproducible evidence.
