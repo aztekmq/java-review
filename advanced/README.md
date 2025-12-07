@@ -75,20 +75,24 @@ Open `myapp.jfr` in **Java Mission Control** and inspect:
 **Folder:** `A3_container_aware_jvm/`
 **Files:** `MyContainerApp.java`, `Dockerfile`
 
-### Build Docker Image
+### Build Docker Image (verbose)
 
 ```bash
-cd advanced/A3_container_aware_jvm
-javac MyContainerApp.java
-jar --create --file MyContainerApp.jar --main-class=MyContainerApp MyContainerApp.class
-
-docker build -t mycontainerapp:latest .
+# From the repo root; emits verbose output for every build step.
+scripts/build_container_image.sh
 ```
 
-### Run with Limits
+### Run with Limits and Capture Evidence
 
 ```bash
-docker run --rm -m 512m --cpus=1 mycontainerapp:latest
+docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest \
+  java -Xms512m -Xmx512m \
+       -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile \
+       -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags \
+       -XX:+HeapDumpOnOutOfMemoryError \
+       -XshowSettings:vm \
+       -jar /app/MyContainerApp.jar
 ```
 
-Observe heap sizing and behavior from `-XshowSettings:vm` output.
+Observe heap sizing, container-aware ergonomics, and verbose GC/JFR evidence. The JFR/GC artifacts land in the current working
+directory for later analysis with the JVM Health Analyzer.
