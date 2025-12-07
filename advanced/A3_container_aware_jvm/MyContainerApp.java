@@ -15,8 +15,10 @@ import jdk.management.jfr.RecordingInfo;
  *
  * <p>The implementation follows international programming standards by
  * documenting each diagnostic step and by hardening the runtime to ensure that
- * JFR and GC artifacts are written to the working directory even when the JVM
- * shuts down quickly.</p>
+ * JFR and GC artifacts are written to the repository root by default (aligned
+ * with other lab outputs) even when the JVM shuts down quickly. Environment
+ * variables or system properties allow alternate destinations while preserving
+ * verbose traceability.</p>
  */
 public class MyContainerApp {
     private static final Duration PAUSE_DURATION = Duration.ofMinutes(1);

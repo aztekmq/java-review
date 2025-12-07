@@ -3,7 +3,9 @@
 This lab now runs directly on the host JVM—no containers required. The helper
 script `run-standalone-app.sh` compiles and launches `MyContainerApp` with
 diagnostic settings that mirror the original lab while keeping all actions
-fully visible through verbose logging.
+fully visible through verbose logging. By default, both the JFR and GC log
+artifacts are written to the repository root (for example, `./advanced-a3.jfr`
+and `./advanced-a3-gc.log`) so they live alongside the other lab outputs.
 
 ## Running the lab without containers
 
@@ -25,8 +27,9 @@ Key details:
 - `TARGET_RELEASE` sets an explicit `javac --release` level if you want to pin
   compilation to a specific Java version.
 - `JAVA_OPTS` appends extra JVM flags (for example, `JAVA_OPTS="-Xms1g"`).
-- `JFR_DUMP_PATH` and `GC_LOG_PATH` override the default artifact locations
-  (`advanced-a3.jfr` and `advanced-a3-gc.log`).
+- `JFR_DUMP_PATH` and `GC_LOG_PATH` override the default artifact locations;
+  the defaults point at the repository root to keep artifacts aligned with
+  other labs (`./advanced-a3.jfr` and `./advanced-a3-gc.log`).
 
 These defaults keep the lab transparent and debuggable without any container
 runtime involvement.

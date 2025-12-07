@@ -75,11 +75,10 @@ Open `myapp.jfr` in **Java Mission Control** and inspect:
 **Folder:** `A3_container_aware_jvm/`
 **File:** `MyContainerApp.java`
 
-### Run with Local Limits and Capture Evidence
+### Run with Local Limits and Capture Evidence (outputs to repo root)
 
 ```bash
-cd advanced/A3_container_aware_jvm
-javac MyContainerApp.java
+javac advanced/A3_container_aware_jvm/MyContainerApp.java
 
 java -Xms512m -Xmx512m \
      -XX:ActiveProcessorCount=2 \
@@ -87,15 +86,16 @@ java -Xms512m -Xmx512m \
      -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags \
      -XX:+HeapDumpOnOutOfMemoryError \
      -XshowSettings:vm \
+     -cp advanced/A3_container_aware_jvm \
      MyContainerApp
 ```
 
 > **Troubleshooting – missing `advanced-a3.jfr` or `advanced-a3-gc.log`:** both
-> artifacts are written to the working directory. If the files are absent, make
-> sure the JVM has write permissions in that folder and re-run the command.
-> The app prints verbose diagnostics about the resolved paths so you can verify
-> where the evidence should appear.
+> artifacts are written to the repository root (the same location used by the
+> other labs). If the files are absent, make sure the JVM has write permissions
+> in that folder and re-run the command. The app prints verbose diagnostics
+> about the resolved paths so you can verify where the evidence should appear.
 
 Observe heap sizing, CPU accounting via `-XX:ActiveProcessorCount`, and verbose
-GC/JFR evidence. The JFR/GC artifacts land in the current working directory for
-analysis with the JVM Health Analyzer.
+GC/JFR evidence. The JFR/GC artifacts land in the repository root for analysis
+with the JVM Health Analyzer.
