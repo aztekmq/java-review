@@ -1,5 +1,5 @@
 name: jvmAnalyzer
-summary: JVM tuning & diagnostics lab focused on production-ready, deep profiling features (YourKit style).
+summary: JVM tuning & diagnostics lab focused on production-ready, deep profiling features (JvmHealthAnalyzer style).
 modules:
   - id: beginner
     path: beginner/

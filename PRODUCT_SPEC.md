@@ -1,7 +1,7 @@
 # Project Spec – java-review
 
 > SINGLE SOURCE OF TRUTH for what this repo is, does, and must never break.
-> **CONTEXT:** This repository is designed to be the definitive hands-on lab environment for learning advanced JVM tuning and diagnostics, specifically leveraging commercial-grade features similar to those found in YourKit Java Profiler (e.g., deep memory leak detection, detailed thread contention analysis, and low-overhead profiling).
+> **CONTEXT:** This repository is designed to be the definitive hands-on lab environment for learning advanced JVM tuning and diagnostics, specifically leveraging commercial-grade features similar to those found in JvmHealthAnalyzer Java Profiler (e.g., deep memory leak detection, detailed thread contention analysis, and low-overhead profiling).
 
 ---
 
@@ -112,7 +112,7 @@ These are the things that **AI tools must not break**:
   - **Focus on analyzing Retained Size to find the GC root,** explaining the "path to GC root" concept used by advanced profilers.
 - **I3_thread_dump_lock_contention**
   - Simulate **deadlock** with two synchronized methods.
-  - Show how profilers/thread dumps identify the threads and the specific locks involved (like YourKit's Deadlock Detection).
+  - Show how profilers/thread dumps identify the threads and the specific locks involved (like JvmHealthAnalyzer's Deadlock Detection).
 
 ### 4.3 Advanced Labs
 
@@ -136,7 +136,7 @@ These are the things that **AI tools must not break**:
     - **Memory Analysis:** GC pause stats, Allocation Volume, and Top allocators.
     - **Concurrency Analysis:** Deadlock count and top contention points.
   - Optionally parse GC log for simple pause stats.
-  - **Output must be a multi-section, detailed report usable as a quick "JVM Health Report" in CLI environments, reflecting YourKit-level deep diagnostics.**
+  - **Output must be a multi-section, detailed report usable as a quick "JVM Health Report" in CLI environments, reflecting JvmHealthAnalyzer-level deep diagnostics.**
 
 ---
 

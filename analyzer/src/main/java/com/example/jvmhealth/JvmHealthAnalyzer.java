@@ -302,14 +302,59 @@ public class JvmHealthAnalyzer {
              System.out.println("[MEDIUM] High contention on monitors. **Action:** Investigate code using the locks above. Consider replacing synchronized blocks with `java.util.concurrent` primitives (e.g., `ReentrantLock`).");
         }
 
-        // --- Next Steps Banner (SPEC Compliant) ---
-        System.out.println();
-        System.out.println("Suggested next steps (YourKit Diagnostics Checklist):");
-        System.out.printf("1) **CPU Action:** Observed max JVM CPU %.1f%%. If >80%%, profile the Top 5 methods and look for inefficient loops or data structures.%n", jfrSummary.cpuMaxPercent);
-        System.out.printf("2) **Memory Action:** Total allocation volume %.2f MB. If high, specifically examine the Top 5 Allocating Classes to reduce object churn.%n", allocatedMb);
-        System.out.printf("3) **Concurrency Action:** Deadlock count %d. If >0, a critical bug exists. If contention is high on Top Locks, refactor using concurrent tools.%n", jfrSummary.deadlockCount);
-        System.out.printf("4) **GC Action:** Max pause %.2f ms. If this violates your latency SLA, switch GC (ZGC/Shenandoah) and confirm with verbose GC logs.%n", jfrSummary.gcStats.maxPauseMillis);
-        System.out.println("5) Store JFR and GC logs with clear identifiers. The raw JFR file contains the detailed stack trace and lock information needed by a senior engineer.");
+        // --- D. HIGH-CONFIDENCE CONCLUSION (Senior Engineer Elimination) ---
+        System.out.println("\n--- D. HIGH-CONFIDENCE CONCLUSION ---");
+        
+        // Triage Logic: Assign scores based on severity to determine primary bottleneck.
+        double cpuScore = 0;
+        double gcScore = 0;
+        double concurrencyScore = 0;
+
+        // 1. CPU Scoring
+        if (jfrSummary.cpuMaxPercent > 95.0) cpuScore = 3.0;
+        else if (jfrSummary.cpuMaxPercent > 80.0) cpuScore = 2.0;
+        else if (jfrSummary.cpuMaxPercent > 60.0) cpuScore = 1.0;
+        
+        // 2. GC/Allocation Scoring
+        if (jfrSummary.gcStats.maxPauseMillis > 1000.0) gcScore = 3.0; // Max pause > 1 second is severe
+        else if (jfrSummary.gcStats.maxPauseMillis > 500.0) gcScore = 2.0;
+        else if (jfrSummary.totalAllocatedBytes / (1024.0 * 1024.0) > 5000) gcScore = 1.0; // Allocation > 5GB is high pressure
+        
+        // 3. Concurrency Scoring
+        if (jfrSummary.deadlockCount > 0) concurrencyScore = 3.0; // Deadlock is critical
+        else if (!jfrSummary.contendedMonitorCounts.isEmpty() && jfrSummary.contendedMonitorCounts.values().stream().mapToLong(AtomicLong::get).max().orElse(0L) > 1000) concurrencyScore = 2.0; // High contention events
+        else if (!jfrSummary.contendedMonitorCounts.isEmpty()) concurrencyScore = 1.0; // Some contention found
+
+        double maxScore = Math.max(cpuScore, Math.max(gcScore, concurrencyScore));
+        String primaryIssue = "No Critical Issues Found";
+        String nextStep = "Maintain current JFR logging setup and rerun during peak load.";
+
+        if (maxScore > 0) {
+            if (maxScore == concurrencyScore && concurrencyScore > 0) {
+                primaryIssue = "Concurrency/Lock Contention (Score: " + maxScore + ")";
+                nextStep = "IMMEDIATE CODE REVIEW: Focus strictly on the Top 5 Contended Monitors/Deadlocks. This is a synchronization fault.";
+            } else if (maxScore == cpuScore) {
+                primaryIssue = "High CPU Load/Inefficiency (Score: " + maxScore + ")";
+                nextStep = "IMMEDIATE CODE REVIEW: Reduce computational time of the Top 5 CPU Hotspot methods identified in Section A.";
+            } else if (maxScore == gcScore) {
+                primaryIssue = "Garbage Collection/Memory Pressure (Score: " + maxScore + ")";
+                nextStep = "IMMEDIATE CODE REVIEW: Examine the Top 5 Allocating Classes (Section B) to reduce object creation or tune GC pause goals.";
+            }
+        }
+
+        System.out.println("=============================================");
+        System.out.println(">> **PRIMARY BOTTLENECK IDENTIFIED**");
+        System.out.printf(">> **ISSUE:** %s%n", primaryIssue);
+        System.out.printf(">> **NEXT ACTION:** %s%n", nextStep);
+        System.out.println("=============================================");
+
+        // --- Next Steps Banner (Senior Engineer Elimination) ---
+        System.out.println("\nSuggested next steps (Expert Diagnostic Checklist):");
+        System.out.println("1) **Primary Focus:** Execute the **NEXT ACTION** from the High-Confidence Conclusion section above.");
+        System.out.printf("2) **CPU Action:** Observed max JVM CPU %.1f%%. If >80%%, profile the Top 5 methods and look for inefficient loops or data structures.%n", jfrSummary.cpuMaxPercent);
+        System.out.printf("3) **Memory Action:** Total allocation volume %.2f MB. If high, specifically examine the Top 5 Allocating Classes to reduce object churn.%n", allocatedMb);
+        System.out.printf("4) **Concurrency Action:** Deadlock count %d. If >0, a critical bug exists. If contention is high on Top Locks, refactor using concurrent tools.%n", jfrSummary.deadlockCount);
+        System.out.printf("5) **Final Step:** Once the primary issue is resolved, rerun this analyzer to identify the new bottleneck, as your code can now triage itself.%n");
         System.out.println();
     }
 }

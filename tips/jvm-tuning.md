@@ -37,5 +37,5 @@
 * *Example Flag:* **`-XX:+HeapDumpOnOutOfMemoryError`**
 
 ### 10. Prioritize Profiling over Guesswork
-* The most important step: **Don't tune blindly.** Use profilers (e.g., **VisualVM**, **JFR/JMC**, **YourKit**) to identify the true bottleneck (e.g., CPU, high allocation rate, I/O, or long GC pauses) before changing JVM arguments.
+* The most important step: **Don't tune blindly.** Use profilers (e.g., **VisualVM**, **JFR/JMC**, **JvmHealthAnalyzer**) to identify the true bottleneck (e.g., CPU, high allocation rate, I/O, or long GC pauses) before changing JVM arguments.
 * **Motto:** "Measure, don't guess."
