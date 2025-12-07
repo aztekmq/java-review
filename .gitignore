@@ -12,3 +12,4 @@ beginner/**/*.class
 tags.*
 gc.*
 *.log.*
+*.hprof
