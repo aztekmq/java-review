@@ -94,5 +94,13 @@ docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:lat
        -jar /app/MyContainerApp.jar
 ```
 
+> **Troubleshooting – no `advanced-a3.jfr` or `advanced-a3-gc.log`:** both
+> artifacts are written to `/workspace` inside the container. If you omit the
+> `-v "$(pwd)":/workspace` volume mount, that directory is ephemeral and the
+> files vanish when `docker run --rm` removes the container. Always mount a
+> host directory (or choose another writable mount point) so the JFR and GC log
+> can be collected after the run. The app prints verbose diagnostics about the
+> resolved paths to help confirm the mount is active.
+
 Observe heap sizing, container-aware ergonomics, and verbose GC/JFR evidence. The JFR/GC artifacts land in the current working
 directory for later analysis with the JVM Health Analyzer.
