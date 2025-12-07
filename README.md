@@ -69,18 +69,21 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 | Advanced – JFR Profiling (`A2_jfr_profiling`) | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties advanced/A2_jfr_profiling/MyServiceAppJfr</code> |
 | Advanced – Container-Aware JVM (`A3_container_aware_jvm`) | <code>docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -XshowSettings:vm advanced/A3_container_aware_jvm/MyContainerApp</code> |
 
-After capturing the artifacts for any lab, invoke the JVM Health Analyzer with verbose build output to keep diagnostics traceable:
+After capturing the artifacts for any lab, use the JVM Health Analyzer with verbose Maven output and explicit artifact names. Each scenario below aligns with the runtime evidence table so you can trace diagnostics end-to-end following international programming standards:
 
-```bash
-cd analyzer
-mvn -q -DskipTests package
+| Lab case | JFR artifact | GC log artifact | Analyzer invocation (verbose build + run) |
+| --- | --- | --- | --- |
+| Beginner – GC Basics (`B1_gc_basics`) | `beginner-b1.jfr` | `beginner-b1-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../beginner-b1.jfr ../beginner-b1-gc.log</code> |
+| Beginner – Heap Sizing (`B2_heap_sizing`) | `beginner-b2.jfr` | `beginner-b2-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../beginner-b2.jfr ../beginner-b2-gc.log</code> |
+| Beginner – Thread States (`B3_thread_states`) | `beginner-b3.jfr` | `beginner-b3-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../beginner-b3.jfr ../beginner-b3-gc.log</code> |
+| Intermediate – G1 Tuning (`I1_gc_tuning_g1`) | `intermediate-i1.jfr` | `intermediate-i1-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../intermediate-i1.jfr ../intermediate-i1-gc.log</code> |
+| Intermediate – Memory Leak Lab (`I2_memory_leak_lab`) | `intermediate-i2.jfr` | `intermediate-i2-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../intermediate-i2.jfr ../intermediate-i2-gc.log</code> |
+| Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) | `intermediate-i3.jfr` | `intermediate-i3-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../intermediate-i3.jfr ../intermediate-i3-gc.log</code> |
+| Advanced – Low Latency GC (`A1_low_latency_gc`) | `advanced-a1.jfr` | `advanced-a1-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a1.jfr ../advanced-a1-gc.log</code> |
+| Advanced – JFR Profiling (`A2_jfr_profiling`) | `advanced-a2.jfr` | `advanced-a2-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a2.jfr ../advanced-a2-gc.log</code> |
+| Advanced – Container-Aware JVM (`A3_container_aware_jvm`) | `advanced-a3.jfr` | `advanced-a3-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a3.jfr ../advanced-a3-gc.log</code> |
 
-java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED \
-     -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar \
-     com.example.jvmhealth.JvmHealthAnalyzer ./advanced-a2.jfr ./advanced-a2-gc.log
-```
-
-Swap the filenames to match the track you executed (e.g., `beginner-b1.jfr` with `beginner-b1-gc.log`). The analyzer prints allocation, pause, and CPU summaries with verbose banners so you can correlate findings with the original run.
+The report prints allocation, pause, and CPU summaries with verbose banners so you can correlate findings with the original run while preserving transparent logging for debugging.
 
 5. **Inspect lab-specific guides**
 
