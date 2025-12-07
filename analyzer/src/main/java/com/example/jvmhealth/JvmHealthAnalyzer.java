@@ -47,6 +47,20 @@ public class JvmHealthAnalyzer {
         Path jfrPath = Paths.get(args[0]);
         Path gcLogPath = (args.length >= 2) ? Paths.get(args[1]) : null;
 
+        if (!Files.exists(jfrPath)) {
+            System.err.printf(
+                    "JFR recording not found at '%s'. Please supply a valid path (e.g., ./recording.jfr) before rerunning the analyzer.%n",
+                    jfrPath.toAbsolutePath());
+            System.exit(1);
+        }
+
+        if (gcLogPath != null && !Files.exists(gcLogPath)) {
+            System.err.printf(
+                    "GC log not found at '%s'. Proceeding without GC log analysis; verify the path or capture a fresh log with -Xlog:gc*.%n",
+                    gcLogPath.toAbsolutePath());
+            gcLogPath = null;
+        }
+
         System.out.println("=== JVM HEALTH ANALYSIS REPORT ===");
         System.out.println("JFR file : " + jfrPath.toAbsolutePath());
         if (gcLogPath != null) {
