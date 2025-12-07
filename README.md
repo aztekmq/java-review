@@ -86,7 +86,7 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 | Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) – *intent:* trigger threads fighting over a lock so you can tie thread dump stacks to poor throughput. | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags -cp intermediate/I3_thread_dump_lock_contention LockContentionLab</code> |
 | Advanced – Low Latency GC (`A1_low_latency_gc`) – *intent:* compare pause times between ZGC and other collectors to understand low-latency trade-offs. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A1_low_latency_gc LowLatencyApp</code> |
 | Advanced – JFR Profiling (`A2_jfr_profiling`) – *intent:* capture a profiling JFR to identify CPU and allocation hot spots with verbose logging enabled. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties -cp advanced/A2_jfr_profiling MyServiceAppJfr</code> |
-| Advanced – Async-Profiler Flame Graphs (`A3_async_profiler`) – *intent:* generate CPU and allocation flame graphs while keeping GC + JFR logging verbose for correlation. | <code>java -Xms2g -Xmx2g -XX:StartFlightRecording=filename=advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A3_async_profiler AsyncProfilerLab</code> (attach <code>profiler.sh -d 30 -e cpu|alloc</code> from async-profiler to the running PID) |
+| Advanced – Async-Profiler Flame Graphs (`A3_async_profiler`) – *intent:* generate CPU and allocation flame graphs while keeping GC + JFR logging verbose for correlation. | <code>java -Xms2g -Xmx2g -XX:StartFlightRecording=filename=advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A3_async_profiler AsyncProfilerLab</code> |
 
 After capturing the artifacts for any lab, use the JVM Health Analyzer with verbose Maven output and explicit artifact names. Each scenario below aligns with the runtime evidence table so you can trace diagnostics end-to-end following international programming standards:
 
@@ -124,6 +124,29 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 - **A1_low_latency_gc** (`LowLatencyApp.java`): Compare ZGC vs. G1 pause behavior by reviewing `zgc.log` and `g1.log` with verbose GC tags.
 - **A2_jfr_profiling** (`MyServiceAppJfr.java`): Record JFR sessions (`-XX:StartFlightRecording=...`) to locate CPU/allocation hotspots, safepoints, and GC pauses.
 - **A3_async_profiler** (`AsyncProfilerLab.java`): Generate sustained CPU + allocation pressure for async-profiler flame graphs while emitting FINEST-level lifecycle logs.
+
+### Copy/paste-ready commands for async-profiler (no shell syntax errors)
+
+The async-profiler lab command in the matrix above should be run exactly as shown, without any trailing notes. To avoid copying parenthetical instructions into your shell, use the following copy-ready sequence:
+
+```bash
+# From the repo root
+java -Xms2g -Xmx2g \
+  -XX:StartFlightRecording=filename=advanced-a3.jfr,dumponexit=true,settings=profile \
+  -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -cp advanced/A3_async_profiler \
+  AsyncProfilerLab
+```
+
+After the banner appears, attach async-profiler from another terminal (these commands are separate so they do not get mixed into the JVM invocation):
+
+```bash
+profiler.sh -d 30 -e cpu -f cpu.svg <pid>
+profiler.sh -d 30 -e alloc -f alloc.svg <pid>
+```
+
+If you prefer a fully scripted run with verbose tracing, execute `advanced/A3_async_profiler/run_async_profiler.sh`; it compiles the lab and launches it with the GC, JFR, and heap-dump flags above so you can attach async-profiler without manual flag entry.
 
 ## JVM Health Analyzer (analyzer/)
 - **Purpose:** Consolidated reporting for JFR files and GC logs to accelerate incident triage.
