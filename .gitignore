@@ -11,3 +11,4 @@ beginner/**/*.class
 *.log
 tags.*
 gc.*
+*.log.*
