@@ -57,6 +57,8 @@
 
 Every lab ships with verbose, reproducible commands so you can launch the scenario and capture JFR + GC logs for the JVM Health Analyzer. Use the table below to locate the correct invocation per track, keeping explicit artifact names for side-by-side comparison in classrooms or CI jobs.
 
+Perhaps, kick-off the lab in one terminal session and while it's still running, kick-off the evidence capture command in another terminal session.
+
 | Lab case | Launch command (verbose) | Runtime evidence capture (JFR + GC logs) |
 | --- | --- | --- |
 | Beginner – GC Basics (`B1_gc_basics`) | <code>java -Xms256m -Xmx256m -Xlog:gc*:tags,uptime beginner/B1_gc_basics/GcBasics</code> | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError beginner/B1_gc_basics/GcBasics</code> |
@@ -182,3 +184,4 @@ Use VisualVM to observe heap usage, GC activity, and thread states in real time 
 - Work through the tracks in order, using the verbose scripts to compile and the per-lab guides to run scenarios.
 - Capture GC logs and JFR recordings during experiments, then feed them to the JVM Health Analyzer for quick summaries.
 - Explore the `tips/` directory and `garbage-collection.md` to deepen your understanding of JVM performance fundamentals.
+
