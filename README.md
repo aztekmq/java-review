@@ -179,9 +179,3 @@ Use VisualVM to observe heap usage, GC activity, and thread states in real time 
    - In VisualVM, locate the running process under **Local** (or add a remote JMX connection to `localhost:9010`).
    - Open the **Monitor** and **Threads** tabs to watch heap, GC pauses, and thread states in real time; use the **Sampler** or **Profiler** for CPU/allocation views.
    - Keep `gc.log` and any JFR captures alongside your run for correlation; the verbose VisualVM console output helps align GUI observations with logged events.
-
-## Next Steps
-- Work through the tracks in order, using the verbose scripts to compile and the per-lab guides to run scenarios.
-- Capture GC logs and JFR recordings during experiments, then feed them to the JVM Health Analyzer for quick summaries.
-- Explore the `tips/` directory and `garbage-collection.md` to deepen your understanding of JVM performance fundamentals.
-
