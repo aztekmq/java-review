@@ -29,7 +29,10 @@ public class JvmHealthAnalyzer {
                                long allocationEvents,
                                long totalAllocatedBytes,
                                long cpuSamples,
-                               double cpuSumPercent) {
+                               double cpuSumPercent,
+                               long heapSamples,
+                               double heapUsedMaxMb,
+                               double heapUsedAvgMb) {
     }
 
     private record GcLogSummary(long gcCount, double totalPauseMs, double maxPauseMs) {
@@ -73,6 +76,9 @@ public class JvmHealthAnalyzer {
         long totalAllocatedBytes = 0;
         long cpuSamples = 0;
         double cpuSumPercent = 0.0;
+        long heapSamples = 0;
+        double heapUsedSumMb = 0.0;
+        double heapUsedMaxMb = 0.0;
 
         try (RecordingFile rf = new RecordingFile(jfrPath)) {
             while (rf.hasMoreEvents()) {
@@ -102,6 +108,15 @@ public class JvmHealthAnalyzer {
                         if (jvmUser != null && jvmSystem != null) {
                             cpuSamples++;
                             cpuSumPercent += (jvmUser + jvmSystem) * 100.0;
+                        }
+                    }
+                    case "jdk.GCHeapSummary" -> {
+                        Long heapUsed = e.getLong("heapUsed");
+                        if (heapUsed != null) {
+                            double heapUsedMb = heapUsed / (1024.0 * 1024.0);
+                            heapSamples++;
+                            heapUsedSumMb += heapUsedMb;
+                            heapUsedMaxMb = Math.max(heapUsedMaxMb, heapUsedMb);
                         }
                     }
                     default -> {
@@ -139,8 +154,26 @@ public class JvmHealthAnalyzer {
             System.out.println("CPU load: no CPULoad events found.");
         }
 
+        if (heapSamples > 0) {
+            System.out.printf("Heap after-GC usage: samples=%d, avg=%.2f MiB, max=%.2f MiB%n",
+                    heapSamples,
+                    heapUsedSumMb / heapSamples,
+                    heapUsedMaxMb);
+        } else {
+            System.out.println("Heap after-GC usage: no GCHeapSummary events found; ensure JFR 'profile' or 'default' settings are enabled.");
+        }
+
         System.out.println();
-        return new JfrSummary(eventCount, gcStats, allocationEvents, totalAllocatedBytes, cpuSamples, cpuSumPercent);
+        return new JfrSummary(
+                eventCount,
+                gcStats,
+                allocationEvents,
+                totalAllocatedBytes,
+                cpuSamples,
+                cpuSumPercent,
+                heapSamples,
+                heapUsedMaxMb,
+                heapSamples > 0 ? heapUsedSumMb / heapSamples : 0.0);
     }
 
     private static GcLogSummary analyzeGcLog(Path gcLogPath) throws IOException {
@@ -216,6 +249,18 @@ public class JvmHealthAnalyzer {
             System.out.println("[INFO] No CPU samples found. Run with -XX:StartFlightRecording=...settings=profile to capture CPU data.");
         }
 
+        // Heap utilization after GC
+        if (jfrSummary.heapSamples > 0) {
+            double avgHeap = jfrSummary.heapUsedAvgMb;
+            double maxHeap = jfrSummary.heapUsedMaxMb;
+            System.out.printf("[INFO] Heap occupancy after GC averaged %.1f MiB (max %.1f MiB) across %d samples.%n", avgHeap, maxHeap, jfrSummary.heapSamples);
+            if (avgHeap > 0 && maxHeap > 0) {
+                System.out.println("        Action: Maintain headroom by keeping after-GC heap below 70% of the configured maximum; consider a larger heap or tighter allocation discipline if this ceiling is exceeded during peaks.");
+            }
+        } else {
+            System.out.println("[INFO] Heap utilization data unavailable. Re-run with JFR heap summaries enabled to validate footprint under heavy load.");
+        }
+
         // GC log heuristics
         if (gcSummary != null) {
             if (gcSummary.gcCount == 0) {
@@ -233,10 +278,17 @@ public class JvmHealthAnalyzer {
         // Next steps banner for junior engineers
         System.out.println();
         System.out.println("Suggested next steps (entry-level checklist):");
-        System.out.println("1) Keep verbose GC logging enabled (-Xlog:gc*) and rerun during peak traffic.");
-        System.out.println("2) If pauses are high, try increasing heap size modestly (e.g., +256m) and re-measure.");
-        System.out.println("3) If CPU is high, capture a new JFR with 'profile' settings and inspect top stack traces.");
-        System.out.println("4) Store JFR + GC logs with timestamps so a senior engineer can review if issues persist.");
+        System.out.println("1) Keep verbose GC logging enabled (-Xlog:gc*) and rerun during peak traffic so evidence stays reproducible.");
+        System.out.printf("2) Pause guidance: observed avg %.1f ms (max %.1f ms); raise heap by ~256 MiB or switch to a low-latency collector before the next run if these values exceed your SLA.%n",
+                jfrSummary.gcStats.count > 0 ? jfrSummary.gcStats.totalPauseMillis / jfrSummary.gcStats.count : 0.0,
+                jfrSummary.gcStats.maxPauseMillis);
+        System.out.printf("3) CPU guidance: observed avg JVM CPU %.1f%% across %d samples; capture a 'profile' JFR and inspect hottest methods if average exceeds 60%% or spikes coincide with pauses.%n",
+                jfrSummary.cpuSamples > 0 ? jfrSummary.cpuSumPercent / jfrSummary.cpuSamples : 0.0,
+                jfrSummary.cpuSamples);
+        System.out.printf("4) Heap footprint guidance: after-GC average %.1f MiB (max %.1f MiB); maintain at least 30%% free headroom relative to your configured max heap, especially for very large heaps (multi-terabyte).%n",
+                jfrSummary.heapUsedAvgMb,
+                jfrSummary.heapUsedMaxMb);
+        System.out.println("5) Store JFR + GC logs with timestamps so a senior engineer can review if issues persist, keeping verbose logging on for traceability.");
         System.out.println();
     }
 }
