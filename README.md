@@ -1,6 +1,24 @@
 # java-review – JVM Tuning & Diagnostics Lab (A–Z Guide)
 
+![Java 17+](https://img.shields.io/badge/JDK-17%2B-5382a1?logo=java&logoColor=white)
+![Maven 3.8+](https://img.shields.io/badge/Maven-3.8%2B-C71A36?logo=apache-maven&logoColor=white)
+![CI Ready](https://img.shields.io/badge/CI-ready-success?logo=githubactions&logoColor=white)
+![Verbose Logging](https://img.shields.io/badge/logging-verbose-blueviolet)
+![License](https://img.shields.io/badge/license-Apache--2.0-lightgrey)
+
 `java-review` is a **hands-on JVM tuning and diagnostics lab** that walks you through everything from first heap inspections to low-latency garbage collectors and JFR-based production forensics. It is organized into three progressive learning tracks plus a JVM Health Analyzer utility. All scripts and builds ship with verbose logging so you can trace every action for repeatable diagnostics.
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Repository Layout](#repository-layout)
+- [Quickstart (A–Z)](#quickstart-a–z)
+- [Runtime evidence matrix (JFR + GC logs)](#runtime-evidence-matrix-jfr--gc-logs)
+- [JVM Health Analyzer (analyzer/)](#jvm-health-analyzer-analyzer)
+- [Automation & Scripts (all verbose)](#automation--scripts-all-verbose)
+- [Logging & Diagnostics Conventions](#logging--diagnostics-conventions)
+- [Graphical JVM Monitoring on Ubuntu WSL (VisualVM)](#graphical-jvm-monitoring-on-ubuntu-wsl-visualvm)
+- [Appendix – Detailed Lab Explanations (Beginner to Advanced)](#appendix--detailed-lab-explanations-beginner-to-advanced)
 
 ## Prerequisites
 
