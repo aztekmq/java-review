@@ -18,8 +18,8 @@ all: $(CLASSES)
 	$(JAVAC) $<
 
 clean:
-        @echo "===> Cleaning advanced lab artifacts"
-        rm -f A1_low_latency_gc/*.class
-        rm -f A1_low_latency_gc/*.log
-        rm -f A2_jfr_profiling/*.class
-        rm -f A2_jfr_profiling/*.jfr
+	@echo "===> Cleaning advanced lab artifacts"
+	rm -f A1_low_latency_gc/*.class
+	rm -f A1_low_latency_gc/*.log
+	rm -f A2_jfr_profiling/*.class
+	rm -f A2_jfr_profiling/*.jfr
