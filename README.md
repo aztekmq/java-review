@@ -16,6 +16,7 @@
 - [Runtime evidence matrix (JFR + GC logs)](#runtime-evidence-matrix-jfr--gc-logs)
 - [JVM Health Analyzer (analyzer/)](#jvm-health-analyzer-analyzer)
 - [Automation & Scripts (all verbose)](#automation--scripts-all-verbose)
+- [Prometheus-Centric JVM Health Platform (CLI + Grafana)](#prometheus-centric-jvm-health-platform-cli--grafana)
 - [Logging & Diagnostics Conventions](#logging--diagnostics-conventions)
 - [Graphical JVM Monitoring on Ubuntu WSL (VisualVM)](#graphical-jvm-monitoring-on-ubuntu-wsl-visualvm)
 - [Appendix – Detailed Lab Explanations (Beginner to Advanced)](#appendix--detailed-lab-explanations-beginner-to-advanced)
@@ -166,6 +167,9 @@ If you prefer a fully scripted run with verbose tracing, execute `advanced/A3_as
 - `scripts/build_analyzer.sh` – Maven package build for the analyzer with verbose shell tracing.
 - `scripts/ci_compile_all.sh` – Orchestrates all of the above, useful for CI pipelines or local smoke checks.
 - `scripts/list_recordings.sh` – Enumerates JFR recordings and GC logs with verbose shell tracing. Control the search depth with `SEARCH_DEPTH` (set to an integer or `unbounded`) to include nested artifact directories while keeping output relative to the repository root.
+
+## Prometheus-Centric JVM Health Platform (CLI + Grafana)
+Looking for a one-command or one-click JVM health workflow? Use the Prometheus-first design documented in [`prometheus-jvm-health-platform.md`](./prometheus-jvm-health-platform.md). It shows how to gather JVM + OS telemetry with JMX exporter, node_exporter, and optional GC/JFR sidecars; analyze KPIs with PromQL and YAML rules; and render verbose, auditable HTML/PDF reports callable from a CLI or Grafana button. This complements the existing JFR/GC log analyzer while keeping verbose logging and international programming standards front and center for easy debugging.
 
 ## Logging & Diagnostics Conventions
 - Prefer **verbose JVM flags** (`-Xlog:gc*`, `-XshowSettings:vm`, `-XX:+HeapDumpOnOutOfMemoryError`) to capture reproducible evidence.
