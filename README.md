@@ -34,9 +34,9 @@
 
 3. **Run a specific lab (per track)**
 
-   - Beginner example: `java -Xms256m -Xmx256m -Xlog:gc* beginner/B1_gc_basics/GcBasics`
-   - Intermediate example: `java -Xlog:gc*:file=gc.log -XX:+UseG1GC intermediate/I1_gc_tuning_g1/MyServiceApp`
-   - Advanced example: `java -XX:+UseZGC -Xlog:gc*:file=zgc.log advanced/A1_low_latency_gc/LowLatencyApp`
+   - Beginner example: `java -Xms256m -Xmx256m -Xlog:gc* -cp beginner/B1_gc_basics beginner/B1_gc_basics/GcBasics`
+   - Intermediate example: `java -Xlog:gc*:file=gc.log -XX:+UseG1GC -cp intermediate/I1_gc_tuning_g1 intermediate/I1_gc_tuning_g1/MyServiceApp`
+   - Advanced example: `java -XX:+UseZGC -Xlog:gc*:file=zgc.log -cp advanced/A1_low_latency_gc advanced/A1_low_latency_gc/LowLatencyApp`
 
 4. **Analyze runtime evidence**
 
@@ -59,15 +59,15 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 
 | Lab case | Runtime evidence capture (JFR + GC logs) |
 | --- | --- |
-| Beginner – GC Basics (`B1_gc_basics`) | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError beginner/B1_gc_basics/GcBasics</code> |
-| Beginner – Heap Sizing (`B2_heap_sizing`) | <code>java -Xms256m -Xmx256m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=beginner-b2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b2-gc.log:uptime,time,level,tags beginner/B2_heap_sizing/HeapStress</code> |
-| Beginner – Thread States (`B3_thread_states`) | <code> java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b3-gc.log:uptime,time,level,tags -cp beginner/B3_thread_states ThreadStatesDemo</code> |
-| Intermediate – G1 Tuning (`I1_gc_tuning_g1`) | <code>java -Xms512m -Xmx512m -XX:MaxGCPauseMillis=200 -XX:StartFlightRecording=filename=intermediate-i1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError intermediate/I1_gc_tuning_g1/MyServiceApp</code> |
-| Intermediate – Memory Leak Lab (`I2_memory_leak_lab`) | <code>java -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=intermediate-i2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i2-gc.log:uptime,time,level,tags intermediate/I2_memory_leak_lab/LeakLab</code> |
-| Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags intermediate/I3_thread_dump_lock_contention/LockContentionLab</code> |
-| Advanced – Low Latency GC (`A1_low_latency_gc`) | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError advanced/A1_low_latency_gc/LowLatencyApp</code> |
-| Advanced – JFR Profiling (`A2_jfr_profiling`) | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties advanced/A2_jfr_profiling/MyServiceAppJfr</code> |
-| Advanced – Container-Aware JVM (`A3_container_aware_jvm`) | <code>docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -XshowSettings:vm advanced/A3_container_aware_jvm/MyContainerApp</code> |
+| Beginner – GC Basics (`B1_gc_basics`) | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp beginner/B1_gc_basics beginner/B1_gc_basics/GcBasics</code> |
+| Beginner – Heap Sizing (`B2_heap_sizing`) | <code>java -Xms256m -Xmx256m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=beginner-b2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b2-gc.log:uptime,time,level,tags -cp beginner/B2_heap_sizing beginner/B2_heap_sizing/HeapStress</code> |
+| Beginner – Thread States (`B3_thread_states`) | <code> java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b3-gc.log:uptime,time,level,tags -cp beginner/B3_thread_states beginner/B3_thread_states/ThreadStatesDemo</code> |
+| Intermediate – G1 Tuning (`I1_gc_tuning_g1`) | <code>java -Xms512m -Xmx512m -XX:MaxGCPauseMillis=200 -XX:StartFlightRecording=filename=intermediate-i1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp intermediate/I1_gc_tuning_g1 intermediate/I1_gc_tuning_g1/MyServiceApp</code> |
+| Intermediate – Memory Leak Lab (`I2_memory_leak_lab`) | <code>java -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=intermediate-i2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i2-gc.log:uptime,time,level,tags -cp intermediate/I2_memory_leak_lab intermediate/I2_memory_leak_lab/LeakLab</code> |
+| Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags -cp intermediate/I3_thread_dump_lock_contention intermediate/I3_thread_dump_lock_contention/LockContentionLab</code> |
+| Advanced – Low Latency GC (`A1_low_latency_gc`) | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A1_low_latency_gc advanced/A1_low_latency_gc/LowLatencyApp</code> |
+| Advanced – JFR Profiling (`A2_jfr_profiling`) | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties -cp advanced/A2_jfr_profiling advanced/A2_jfr_profiling/MyServiceAppJfr</code> |
+| Advanced – Container-Aware JVM (`A3_container_aware_jvm`) | <code>docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -XshowSettings:vm -cp /workspace/advanced/A3_container_aware_jvm /workspace/advanced/A3_container_aware_jvm/MyContainerApp</code> |
 
 After capturing the artifacts for any lab, use the JVM Health Analyzer with verbose Maven output and explicit artifact names. Each scenario below aligns with the runtime evidence table so you can trace diagnostics end-to-end following international programming standards:
 
@@ -164,6 +164,7 @@ Use VisualVM to observe heap usage, GC activity, and thread states in real time 
         -Dcom.sun.management.jmxremote.authenticate=false \
         -Dcom.sun.management.jmxremote.ssl=false \
         -XX:+HeapDumpOnOutOfMemoryError \
+        -cp beginner/B1_gc_basics \
         beginner/B1_gc_basics/GcBasics
    ```
 
