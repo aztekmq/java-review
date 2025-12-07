@@ -34,6 +34,7 @@ public class MyContainerApp {
 
         System.out.println("MyContainerApp starting...");
         System.out.println("JVM settings (VM):");
+        System.out.println("Diagnostics: running on Java " + System.getProperty("java.version"));
         System.out.println("Diagnostics: writing JFR to " + jfrPath);
         System.out.println("Diagnostics: writing GC log to " + gcLogPath);
 
