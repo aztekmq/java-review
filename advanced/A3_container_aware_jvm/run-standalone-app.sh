@@ -13,13 +13,18 @@
 # Environment overrides:
 #   TARGET_RELEASE   - Optional java --release level to compile against.
 #   JAVA_OPTS        - Additional JVM options appended to the defaults.
-#   JFR_DUMP_PATH    - Custom path for the JFR dump file (default advanced-a3.jfr).
-#   GC_LOG_PATH      - Custom path for the GC log file (default advanced-a3-gc.log).
+#   JFR_DUMP_PATH    - Custom path for the JFR dump file (default writes to the
+#                      repository root: advanced-a3.jfr).
+#   GC_LOG_PATH      - Custom path for the GC log file (default writes to the
+#                      repository root: advanced-a3-gc.log).
 
 set -euo pipefail
 set -x
 
-cd "$(dirname "$0")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+APP_DIR="${REPO_ROOT}/advanced/A3_container_aware_jvm"
+cd "${APP_DIR}"
 
 log() {
   printf '[run-standalone-app] %s\n' "$*"
@@ -61,8 +66,11 @@ target_release=$(detect_release)
 log "Compiling MyContainerApp.java with --release ${target_release}"
 javac --release "${target_release}" MyContainerApp.java
 
-jfr_path=${JFR_DUMP_PATH:-advanced-a3.jfr}
-gc_log_path=${GC_LOG_PATH:-advanced-a3-gc.log}
+jfr_path=${JFR_DUMP_PATH:-${REPO_ROOT}/advanced-a3.jfr}
+gc_log_path=${GC_LOG_PATH:-${REPO_ROOT}/advanced-a3-gc.log}
+
+log "JFR artifacts will be written to ${jfr_path}"
+log "GC logs will be written to ${gc_log_path}"
 
 default_opts=(
   -Xms512m
