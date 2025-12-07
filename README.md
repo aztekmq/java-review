@@ -61,7 +61,7 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 | --- | --- |
 | Beginner – GC Basics (`B1_gc_basics`) | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError beginner/B1_gc_basics/GcBasics</code> |
 | Beginner – Heap Sizing (`B2_heap_sizing`) | <code>java -Xms256m -Xmx256m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=beginner-b2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b2-gc.log:uptime,time,level,tags beginner/B2_heap_sizing/HeapStress</code> |
-| Beginner – Thread States (`B3_thread_states`) | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b3-gc.log:uptime,time,level,tags beginner/B3_thread_states/ThreadStatesDemo</code> |
+| Beginner – Thread States (`B3_thread_states`) | <code> java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b3-gc.log:uptime,time,level,tags -cp beginner/B3_thread_states ThreadStatesDemo/code> |
 | Intermediate – G1 Tuning (`I1_gc_tuning_g1`) | <code>java -Xms512m -Xmx512m -XX:MaxGCPauseMillis=200 -XX:StartFlightRecording=filename=intermediate-i1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError intermediate/I1_gc_tuning_g1/MyServiceApp</code> |
 | Intermediate – Memory Leak Lab (`I2_memory_leak_lab`) | <code>java -Xms512m -Xmx512m -XX:+HeapDumpOnOutOfMemoryError -XX:StartFlightRecording=filename=intermediate-i2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i2-gc.log:uptime,time,level,tags intermediate/I2_memory_leak_lab/LeakLab</code> |
 | Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags intermediate/I3_thread_dump_lock_contention/LockContentionLab</code> |
@@ -180,3 +180,4 @@ Use VisualVM to observe heap usage, GC activity, and thread states in real time 
    - In VisualVM, locate the running process under **Local** (or add a remote JMX connection to `localhost:9010`).
    - Open the **Monitor** and **Threads** tabs to watch heap, GC pauses, and thread states in real time; use the **Sampler** or **Profiler** for CPU/allocation views.
    - Keep `gc.log` and any JFR captures alongside your run for correlation; the verbose VisualVM console output helps align GUI observations with logged events.
+
