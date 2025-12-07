@@ -43,7 +43,7 @@ fi
 if ! mount --bind "$HOST_DIR" "$MOUNT_POINT"; then
   cat <<'ERR' >&2
 [ERROR] Bind mount failed. Ensure you have mount privileges in this environment.
-- If running inside a restricted container, retry with sudo from the host/WSL shell
+- If mount helpers are limited, retry with sudo from the host/WSL shell
   or run the labs directly from WSL where /workspace maps to /mnt/c/...
 - For CI environments without mount support, fall back to the export helper script.
 ERR
