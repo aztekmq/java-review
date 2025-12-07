@@ -77,6 +77,8 @@
 
 Every lab ships with verbose, reproducible commands so you can launch the scenario and capture JFR + GC logs for the JVM Health Analyzer. Use the table below to locate the correct invocation per track, keeping explicit artifact names for side-by-side comparison in classrooms or CI jobs.
 
+> **Container lab prerequisite:** Run `scripts/build_container_image.sh` once to build the `java-review-container:latest` image with verbose Docker output before executing the A3 command. The helper compiles the app, packages the JAR, and emits progress logs for traceability.
+
 | Lab case | Runtime evidence capture (JFR + GC logs) |
 | --- | --- |
 | Beginner – GC Basics (`B1_gc_basics`) – *intent:* see how a tiny heap triggers frequent collections and how verbose GC logging records each pause. | <code>java -Xms256m -Xmx256m -XX:StartFlightRecording=filename=beginner-b1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=beginner-b1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp beginner/B1_gc_basics GcBasics</code> |
@@ -87,7 +89,7 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 | Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) – *intent:* trigger threads fighting over a lock so you can tie thread dump stacks to poor throughput. | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags -cp intermediate/I3_thread_dump_lock_contention LockContentionLab</code> |
 | Advanced – Low Latency GC (`A1_low_latency_gc`) – *intent:* compare pause times between ZGC and other collectors to understand low-latency trade-offs. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A1_low_latency_gc LowLatencyApp</code> |
 | Advanced – JFR Profiling (`A2_jfr_profiling`) – *intent:* capture a profiling JFR to identify CPU and allocation hot spots with verbose logging enabled. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties -cp advanced/A2_jfr_profiling MyServiceAppJfr</code> |
-| Advanced – Container-Aware JVM (`A3_container_aware_jvm`) – *intent:* observe how JVM ergonomics change under container CPU and memory limits with verbose evidence. | <code>docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -XshowSettings:vm -cp /workspace/advanced/A3_container_aware_jvm MyContainerApp</code> |
+| Advanced – Container-Aware JVM (`A3_container_aware_jvm`) – *intent:* observe how JVM ergonomics change under container CPU and memory limits with verbose evidence. | <code>docker run --rm -m512m --cpus=2 -v "$(pwd)":/workspace java-review-container:latest java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=/workspace/advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=/workspace/advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -XshowSettings:vm -jar /app/MyContainerApp.jar</code> |
 
 After capturing the artifacts for any lab, use the JVM Health Analyzer with verbose Maven output and explicit artifact names. Each scenario below aligns with the runtime evidence table so you can trace diagnostics end-to-end following international programming standards:
 
@@ -141,6 +143,7 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 - `scripts/compile_beginner.sh` – Runs `make all` in `beginner/` with command tracing to show each compilation step.
 - `scripts/compile_intermediate.sh` – Compiles intermediate labs with `set -x` and status banners for every file.
 - `scripts/compile_advanced.sh` – Builds advanced labs, echoing progress and any generated artifacts.
+- `scripts/build_container_image.sh` – Compiles the container lab, packages the JAR, and builds the Docker image with verbose Docker progress output.
 - `scripts/build_analyzer.sh` – Maven package build for the analyzer with verbose shell tracing.
 - `scripts/ci_compile_all.sh` – Orchestrates all of the above, useful for CI pipelines or local smoke checks.
 
