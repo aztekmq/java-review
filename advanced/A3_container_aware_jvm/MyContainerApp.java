@@ -26,8 +26,16 @@ public class MyContainerApp {
     private static final String DEFAULT_GC_LOG_PATH = "advanced-a3-gc.log";
 
     public static void main(String[] args) {
-        Path jfrPath = resolvePath("JFR_DUMP_PATH", "jfr.dump.path", DEFAULT_JFR_PATH);
-        Path gcLogPath = resolvePath("GC_LOG_PATH", "gc.log.path", DEFAULT_GC_LOG_PATH);
+        Path repositoryRoot = detectRepositoryRoot();
+
+        Path jfrPath = resolvePath(
+                "JFR_DUMP_PATH",
+                "jfr.dump.path",
+                repositoryRoot.resolve(DEFAULT_JFR_PATH));
+        Path gcLogPath = resolvePath(
+                "GC_LOG_PATH",
+                "gc.log.path",
+                repositoryRoot.resolve(DEFAULT_GC_LOG_PATH));
 
         prepareOutputTarget("JFR", jfrPath);
         prepareOutputTarget("GC", gcLogPath);
@@ -82,11 +90,29 @@ public class MyContainerApp {
         }
     }
 
-    private static Path resolvePath(String envName, String propertyName, String defaultPath) {
+    private static Path resolvePath(String envName, String propertyName, Path defaultPath) {
         return Optional.ofNullable(System.getenv(envName))
                 .map(Path::of)
                 .or(() -> Optional.ofNullable(System.getProperty(propertyName)).map(Path::of))
-                .orElse(Path.of(defaultPath));
+                .orElse(defaultPath);
+    }
+
+    private static Path detectRepositoryRoot() {
+        Path workingDirectory = Path.of("").toAbsolutePath().normalize();
+        Path candidate = workingDirectory;
+
+        while (candidate != null) {
+            if (Files.isDirectory(candidate.resolve(".git"))) {
+                System.out.println("Diagnostics: detected repository root at " + candidate);
+                return candidate;
+            }
+            candidate = candidate.getParent();
+        }
+
+        System.out.println(
+                "Diagnostics: repository root not found; using working directory for artifacts: "
+                        + workingDirectory);
+        return workingDirectory;
     }
 
     private static void ensureJfrDump(Path jfrPath) {
