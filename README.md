@@ -123,7 +123,7 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 ### Advanced – Low Latency & Production Profiling
 - **A1_low_latency_gc** (`LowLatencyApp.java`): Compare ZGC vs. G1 pause behavior by reviewing `zgc.log` and `g1.log` with verbose GC tags.
 - **A2_jfr_profiling** (`MyServiceAppJfr.java`): Record JFR sessions (`-XX:StartFlightRecording=...`) to locate CPU/allocation hotspots, safepoints, and GC pauses.
-- **A3_container_aware_jvm** (`MyContainerApp.java`): Observe JVM ergonomics under explicit CPU/memory limits (`-XshowSettings:vm`), no Docker required.
+- **A3_container_aware_jvm** (`MyContainerApp.java`): Observe JVM ergonomics under explicit CPU/memory limits (`-XshowSettings:vm`) on the local host without container tooling.
 
 ## JVM Health Analyzer (analyzer/)
 - **Purpose:** Consolidated reporting for JFR files and GC logs to accelerate incident triage.

@@ -4,7 +4,7 @@ This track covers:
 
 - Low-latency GC (ZGC / Shenandoah)
 - Deep JFR profiling
-- JVM behavior under resource limits without containers
+- JVM behavior under local resource limits
 
 ---
 
@@ -12,7 +12,7 @@ This track covers:
 
 1. **A1_low_latency_gc** – Compare ZGC vs G1 pause behavior
 2. **A2_jfr_profiling** – JFR-based profiling of a service
-3. **A3_container_aware_jvm** – JVM resource limits without Docker
+3. **A3_container_aware_jvm** – JVM resource limits on a local host
 
 ---
 
@@ -70,7 +70,7 @@ Open `myapp.jfr` in **Java Mission Control** and inspect:
 
 ---
 
-## Lab A3 – JVM Resource Limits without Docker
+## Lab A3 – JVM Resource Limits on a Local Host
 
 **Folder:** `A3_container_aware_jvm/`
 **File:** `MyContainerApp.java`
