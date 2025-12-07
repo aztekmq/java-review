@@ -86,6 +86,7 @@ Every lab ships with verbose, reproducible commands so you can launch the scenar
 | Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) – *intent:* trigger threads fighting over a lock so you can tie thread dump stacks to poor throughput. | <code>java -Xms512m -Xmx512m -XX:StartFlightRecording=filename=intermediate-i3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=intermediate-i3-gc.log:uptime,time,level,tags -cp intermediate/I3_thread_dump_lock_contention LockContentionLab</code> |
 | Advanced – Low Latency GC (`A1_low_latency_gc`) – *intent:* compare pause times between ZGC and other collectors to understand low-latency trade-offs. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a1.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a1-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A1_low_latency_gc LowLatencyApp</code> |
 | Advanced – JFR Profiling (`A2_jfr_profiling`) – *intent:* capture a profiling JFR to identify CPU and allocation hot spots with verbose logging enabled. | <code>java -Xms1g -Xmx1g -XX:+UseZGC -XX:StartFlightRecording=filename=advanced-a2.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a2-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -Djava.util.logging.config.file=logging.properties -cp advanced/A2_jfr_profiling MyServiceAppJfr</code> |
+| Advanced – Async-Profiler Flame Graphs (`A3_async_profiler`) – *intent:* generate CPU and allocation flame graphs while keeping GC + JFR logging verbose for correlation. | <code>java -Xms2g -Xmx2g -XX:StartFlightRecording=filename=advanced-a3.jfr,dumponexit=true,settings=profile -Xlog:gc*:file=advanced-a3-gc.log:uptime,time,level,tags -XX:+HeapDumpOnOutOfMemoryError -cp advanced/A3_async_profiler AsyncProfilerLab</code> (attach <code>profiler.sh -d 30 -e cpu|alloc</code> from async-profiler to the running PID) |
 
 After capturing the artifacts for any lab, use the JVM Health Analyzer with verbose Maven output and explicit artifact names. Each scenario below aligns with the runtime evidence table so you can trace diagnostics end-to-end following international programming standards:
 
@@ -99,6 +100,7 @@ After capturing the artifacts for any lab, use the JVM Health Analyzer with verb
 | Intermediate – Lock Contention (`I3_thread_dump_lock_contention`) – *purpose:* distill the contention run into metrics that highlight blocked time per thread. | `intermediate-i3.jfr` | `intermediate-i3-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../intermediate-i3.jfr ../intermediate-i3-gc.log</code> |
 | Advanced – Low Latency GC (`A1_low_latency_gc`) | `advanced-a1.jfr` | `advanced-a1-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a1.jfr ../advanced-a1-gc.log</code> |
 | Advanced – JFR Profiling (`A2_jfr_profiling`) | `advanced-a2.jfr` | `advanced-a2-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a2.jfr ../advanced-a2-gc.log</code> |
+| Advanced – Async-Profiler Flame Graphs (`A3_async_profiler`) | `advanced-a3.jfr` | `advanced-a3-gc.log` | <code>cd analyzer && mvn -DskipTests -X package && java --add-exports jdk.jfr/jdk.jfr.consumer=ALL-UNNAMED -cp target/jvm-health-analyzer-1.0-SNAPSHOT.jar com.example.jvmhealth.JvmHealthAnalyzer ../advanced-a3.jfr ../advanced-a3-gc.log</code> |
 
 The report prints allocation, pause, and CPU summaries with verbose banners so you can correlate findings with the original run while preserving transparent logging for debugging.
 
@@ -121,6 +123,7 @@ The report prints allocation, pause, and CPU summaries with verbose banners so y
 ### Advanced – Low Latency & Production Profiling
 - **A1_low_latency_gc** (`LowLatencyApp.java`): Compare ZGC vs. G1 pause behavior by reviewing `zgc.log` and `g1.log` with verbose GC tags.
 - **A2_jfr_profiling** (`MyServiceAppJfr.java`): Record JFR sessions (`-XX:StartFlightRecording=...`) to locate CPU/allocation hotspots, safepoints, and GC pauses.
+- **A3_async_profiler** (`AsyncProfilerLab.java`): Generate sustained CPU + allocation pressure for async-profiler flame graphs while emitting FINEST-level lifecycle logs.
 
 ## JVM Health Analyzer (analyzer/)
 - **Purpose:** Consolidated reporting for JFR files and GC logs to accelerate incident triage.
