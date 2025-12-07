@@ -1,15 +1,12 @@
 
-analyzer/target/
-beginner/
-intermediate/
-advanced/
-
 # Ignore analyzer build artifacts and compiled binaries.
-analyzer/target/
-beginner/**/*.class
+*.class
+MyContainerApp.class
+*.jar
 *.jfr
 *.log
 tags.*
 gc.*
 *.log.*
 *.hprof
+*.lst
