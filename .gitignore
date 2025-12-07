@@ -1,7 +1,6 @@
 
 # Ignore analyzer build artifacts and compiled binaries.
 *.class
-MyContainerApp.class
 *.jar
 *.jfr
 *.log
