@@ -17,6 +17,7 @@
 - [JVM Health Analyzer (analyzer/)](#jvm-health-analyzer-analyzer)
 - [Automation & Scripts (all verbose)](#automation--scripts-all-verbose)
 - [Prometheus-Centric JVM Health Platform (CLI + Grafana)](#prometheus-centric-jvm-health-platform-cli--grafana)
+- [Complete Prometheus Environment Setup](prometheus-setup-guide.md)
 - [Logging & Diagnostics Conventions](#logging--diagnostics-conventions)
 - [Graphical JVM Monitoring on Ubuntu WSL (VisualVM)](#graphical-jvm-monitoring-on-ubuntu-wsl-visualvm)
 - [Appendix – Detailed Lab Explanations (Beginner to Advanced)](#appendix--detailed-lab-explanations-beginner-to-advanced)
@@ -170,6 +171,7 @@ If you prefer a fully scripted run with verbose tracing, execute `advanced/A3_as
 
 ## Prometheus-Centric JVM Health Platform (CLI + Grafana)
 Looking for a one-command or one-click JVM health workflow? Use the Prometheus-first design documented in [`prometheus-jvm-health-platform.md`](./prometheus-jvm-health-platform.md). It shows how to gather JVM + OS telemetry with JMX exporter, node_exporter, and optional GC/JFR sidecars; analyze KPIs with PromQL and YAML rules; and render verbose, auditable HTML/PDF reports callable from a CLI or Grafana button. This complements the existing JFR/GC log analyzer while keeping verbose logging and international programming standards front and center for easy debugging.
+- For a full-stack Prometheus deployment with explicit systemd units, debug-level logging, exporters, Pushgateway, and Grafana, follow [`prometheus-setup-guide.md`](./prometheus-setup-guide.md).
 
 ## Logging & Diagnostics Conventions
 - Prefer **verbose JVM flags** (`-Xlog:gc*`, `-XshowSettings:vm`, `-XX:+HeapDumpOnOutOfMemoryError`) to capture reproducible evidence.
