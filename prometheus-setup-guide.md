@@ -1,7 +1,5 @@
 # Complete, Production-Ready Prometheus Stack Setup for JVM Monitoring  
 **2025 Edition – Thorough, Secure, Verbose, Standards-Driven**
-# Complete, Production-Ready Prometheus Stack Setup for JVM Monitoring  
-**2025 Edition – Thorough, Secure, Verbose, Standards-Driven**
 
 <div class="toc-bar">
   <strong>Navigate:</strong>
@@ -51,11 +49,6 @@
 </style>
 
 This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
-
-
-This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
-
-Everything is done **from A to Z** with exact commands, version-pinned downloads (December 2025), checksum verification, proper systemd hardening, TLS considerations, and architectural diagrams.
 
 ### Target Architecture Diagram (Text-based)
 
