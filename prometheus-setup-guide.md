@@ -18,7 +18,7 @@
   <a href="#12-maintenance--operations">12. Maintenance</a>
 </div>
 <hr>
-<hr>
+
 This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
 
 ### Target Architecture Diagram (Text-based)
