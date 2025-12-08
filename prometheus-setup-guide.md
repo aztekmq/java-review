@@ -2,7 +2,6 @@
 **2025 Edition – Thorough, Secure, Verbose, Standards-Driven**
 
 <div class="toc-bar">
-  <strong>Navigate:</strong>
   <a href="#target-architecture-diagram-text-based">Architecture</a> |
   <a href="#1-prerequisites--system-preparation">1. Prerequisites</a> |
   <a href="#2-directory-layout-immutable--predictable">2. Directory Layout</a> |
