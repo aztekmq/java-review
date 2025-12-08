@@ -18,35 +18,6 @@
   <a href="#12-maintenance--operations">12. Maintenance</a>
 </div>
 
-<style>
-.toc-bar {
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  background: #111111;
-  padding: 0.55rem 0.9rem;
-  border-bottom: 1px solid #333333;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: center;
-  font-size: 0.9rem;
-}
-
-.toc-bar strong {
-  margin-right: 0.5rem;
-}
-
-.toc-bar a {
-  text-decoration: none;
-  color: #42a5f5;
-  white-space: nowrap;
-}
-
-.toc-bar a:hover {
-  text-decoration: underline;
-}
-</style>
 
 This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
 
