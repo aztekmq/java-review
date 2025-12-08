@@ -1,5 +1,57 @@
 # Complete, Production-Ready Prometheus Stack Setup for JVM Monitoring  
 **2025 Edition – Thorough, Secure, Verbose, Standards-Driven**
+# Complete, Production-Ready Prometheus Stack Setup for JVM Monitoring  
+**2025 Edition – Thorough, Secure, Verbose, Standards-Driven**
+
+<div class="toc-bar">
+  <strong>Navigate:</strong>
+  <a href="#target-architecture-diagram-text-based">Architecture</a> |
+  <a href="#1-prerequisites--system-preparation">1. Prerequisites</a> |
+  <a href="#2-directory-layout-immutable--predictable">2. Directory Layout</a> |
+  <a href="#3-install-prometheus-v2561-latest-stable--dec-2025">3. Prometheus</a> |
+  <a href="#4-install-node_exporter-v190">4. node_exporter</a> |
+  <a href="#5-install-jmx-exporter-latest-stable-101--dec-2025">5. JMX Exporter</a> |
+  <a href="#6-install-pushgateway-v190">6. Pushgateway</a> |
+  <a href="#7-install-alertmanager-v0270">7. Alertmanager</a> |
+  <a href="#8-install-grafana-v1130-enterprise-or-oss">8. Grafana</a> |
+  <a href="#9-final-systemd-activation">9. systemd Activation</a> |
+  <a href="#10-full-validation-checklist">10. Validation</a> |
+  <a href="#11-security-hardening-mandatory-in-production">11. Security</a> |
+  <a href="#12-maintenance--operations">12. Maintenance</a>
+</div>
+
+<style>
+.toc-bar {
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  background: #111111;
+  padding: 0.55rem 0.9rem;
+  border-bottom: 1px solid #333333;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.toc-bar strong {
+  margin-right: 0.5rem;
+}
+
+.toc-bar a {
+  text-decoration: none;
+  color: #42a5f5;
+  white-space: nowrap;
+}
+
+.toc-bar a:hover {
+  text-decoration: underline;
+}
+</style>
+
+This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
+
 
 This guide takes you from **zero to a fully functional, secure, observable Prometheus ecosystem** specifically tailored for **JVM application monitoring** using the official JMX Exporter, node_exporter, Pushgateway, Alertmanager, and Grafana.
 
